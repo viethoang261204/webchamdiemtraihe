@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: whalesbot-scoring
+    env: static
+    staticPublishPath: .
+    buildCommand: echo "static site, no build"
+    routes:
+      - type: rewrite
+        source: /admin
+        destination: /admin/index.html
+      - type: rewrite
+        source: /admin/
+        destination: /admin/index.html
