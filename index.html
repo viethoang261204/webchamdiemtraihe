@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>BXH – Tổng Kết Trại Hè WhalesBot AI Robotics & Drones</title>
+  <link rel="icon"           href="assets/img/favicon.ico"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png"/>
+  <link rel="apple-touch-icon"                    href="assets/img/onespace.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet"/>
+  <style>
+/* ─── RESET ─── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+img{display:block}
+body{
+  font-family:'Be Vietnam Pro',sans-serif;
+  background:#070c18;color:#dce8ff;
+  min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── BACKGROUND ─── */
+.site-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 90% 60% at 8% 2%, rgba(15,60,200,.1), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 92% 95%, rgba(60,15,180,.08), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(9,180,204,.04), transparent 70%),
+    linear-gradient(175deg, #070c18 0%, #091222 40%, #07101e 100%);
+}
+.site-bg::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(9,180,204,.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(9,180,204,.016) 1px, transparent 1px);
+  background-size:64px 64px;
+}
+.site-bg::after{
+  content:'';position:absolute;
+  width:600px;height:600px;border-radius:50%;
+  top:-180px;left:50%;transform:translateX(-50%);
+  background:radial-gradient(ellipse, rgba(9,180,204,.05), transparent 70%);
+  pointer-events:none;
+}
+
+/* ─── WRAP ─── */
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 24px 80px}
+
+/* ─── HEADER ─── */
+.site-header{
+  display:grid;
+  grid-template-columns:220px 1fr 220px;
+  align-items:center;
+  padding:18px 20px;
+  position:relative;z-index:1;
+}
+.site-header::after{
+  content:'';position:absolute;bottom:0;left:20px;right:20px;
+  height:1px;background:linear-gradient(90deg,transparent,rgba(9,180,204,.18),transparent);
+}
+
+.hdr-logo-box{display:flex;align-items:center}
+.hdr-logo-box.right{justify-content:flex-end}
+
+.logo-wrap{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:10px 16px;height:100px;
+  display:flex;align-items:center;justify-content:center;
+  transition:.25s;width:100%;
+}
+.logo-wrap:hover{background:rgba(255,255,255,.09);border-color:rgba(9,180,204,.22)}
+
+.logo-vinschool{max-width:180px;max-height:76px;width:auto;height:auto;object-fit:contain}
+.logo-onespace {width:78px;height:78px;object-fit:contain;border-radius:10px}
+
+.hdr-center{text-align:center;padding:0 12px}
+.hdr-tag{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:#09b4cc;margin-bottom:8px;opacity:.85;
+}
+.hdr-title{
+  font-size:clamp(15px,2.2vw,22px);font-weight:900;color:#fff;
+  line-height:1.25;letter-spacing:.3px;
+  text-shadow:0 2px 24px rgba(9,180,204,.18);
+}
+.hdr-subtitle{
+  font-size:clamp(11.5px,1.4vw,14px);font-weight:700;color:#09b4cc;
+  margin-top:7px;letter-spacing:.5px;
+}
+.hdr-venue{font-size:11px;color:#607090;margin-top:4px;font-weight:500}
+
+/* ─── NAV ─── */
+.site-nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:14px 0;
+  background:rgba(7,12,24,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(9,180,204,.1);
+}
+.nav-pill{
+  padding:8px 24px;border-radius:30px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);
+  font-size:13.5px;font-weight:700;color:#607090;
+  cursor:pointer;transition:all .22s;
+}
+.nav-pill:hover{color:#dce8ff;border-color:rgba(9,180,204,.25);background:rgba(9,180,204,.07)}
+.nav-pill.on{
+  background:rgba(9,180,204,.12);border-color:rgba(9,180,204,.35);
+  color:#09b4cc;box-shadow:0 0 20px rgba(9,180,204,.1);
+}
+
+/* ─── UPDATED BAR ─── */
+.upd-bar{font-size:12px;color:#607090;text-align:right;padding:10px 0 0}
+.upd-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#10b981;margin-right:6px;
+  box-shadow:0 0 0 2px rgba(16,185,130,.25);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ─── CAT SECTIONS ─── */
+.cat-sec{display:none}
+.cat-sec.on{display:block}
+
+/* ─── PODIUM ─── */
+.podium-wrap{
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:12px;padding:48px 0 32px;
+}
+.pod{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;transition:transform .25s}
+.pod:hover{transform:translateY(-4px)}
+
+.pod-avatar{
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#fff;position:relative;font-size:22px;
+}
+.pod1 .pod-avatar{width:92px;height:92px;background:radial-gradient(135deg,#d4a017,#f0c42c);box-shadow:0 0 0 3px rgba(212,160,23,.3),0 8px 32px rgba(212,160,23,.35)}
+.pod2 .pod-avatar{width:76px;height:76px;background:radial-gradient(135deg,#8c9fab,#b8c9d8);box-shadow:0 0 0 3px rgba(175,200,228,.2),0 6px 24px rgba(175,200,228,.2)}
+.pod3 .pod-avatar{width:68px;height:68px;background:radial-gradient(135deg,#9a6028,#c47c3c);box-shadow:0 0 0 3px rgba(154,96,40,.25),0 5px 20px rgba(154,96,40,.25)}
+
+.pod-num{
+  font-size:12px;font-weight:700;position:absolute;top:-6px;right:-6px;
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#070c18;border:1.5px solid rgba(255,255,255,.15);color:#aabbd0;
+}
+.pod-name{font-size:14px;font-weight:800;color:#fff;max-width:130px;line-height:1.3}
+.pod-mems{font-size:11px;color:#607090;max-width:130px;line-height:1.5}
+.pod-score{
+  font-size:28px;font-weight:900;
+  background:linear-gradient(135deg,#09b4cc,#5bc8e0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.pod1 .pod-score{font-size:34px}
+.pod-time{font-size:11px;color:#607090}
+
+.pod-plinth{
+  border-radius:10px 10px 0 0;width:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;letter-spacing:1px;
+  color:rgba(255,255,255,.35);
+}
+.pod1 .pod-plinth{height:80px;background:linear-gradient(180deg,rgba(212,160,23,.14),rgba(212,160,23,.05));border:1px solid rgba(212,160,23,.2);min-width:140px}
+.pod2 .pod-plinth{height:60px;background:linear-gradient(180deg,rgba(175,200,228,.08),rgba(175,200,228,.03));border:1px solid rgba(175,200,228,.14);min-width:120px}
+.pod3 .pod-plinth{height:44px;background:linear-gradient(180deg,rgba(154,96,40,.1),rgba(154,96,40,.03));border:1px solid rgba(154,96,40,.16);min-width:110px}
+
+.pod-order{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
+
+/* ─── RANK TABLE ─── */
+.tbl-hdr{font-size:14px;font-weight:800;color:#aabbd0;margin:8px 0 14px;letter-spacing:.3px}
+.rtbl-wrap{
+  background:rgba(8,14,36,.75);border:1px solid rgba(9,180,204,.1);
+  border-radius:18px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.3);
+}
+table{width:100%;border-collapse:collapse}
+thead th{
+  padding:13px 16px;text-align:left;
+  font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:#607090;background:rgba(0,0,0,.22);border-bottom:1px solid rgba(255,255,255,.05);
+}
+thead th.tc{text-align:center}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(9,180,204,.04)}
+td{padding:13px 16px;vertical-align:middle}
+td.tc{text-align:center}
+
+.rank-g td{background:rgba(212,160,23,.06)}
+.rank-s td{background:rgba(175,200,228,.04)}
+.rank-b td{background:rgba(154,96,40,.05)}
+
+.rank-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;margin:0 auto}
+.rbg{background:rgba(212,160,23,.12);color:#d4a017;border:1px solid rgba(212,160,23,.28)}
+.rbs{background:rgba(175,200,228,.08);color:#afc8e4;border:1px solid rgba(175,200,228,.22)}
+.rbb{background:rgba(154,96,40,.09); color:#b06e28;border:1px solid rgba(154,96,40,.24)}
+.rbn{background:rgba(255,255,255,.04);color:#607090;font-size:12px}
+
+.team-name {font-weight:800;font-size:14.5px;color:#fff}
+.team-mems {font-size:11.5px;color:#607090;margin-top:2px}
+.score-val {font-weight:900;font-size:18px;color:#09b4cc}
+.time-val  {font-size:11px;color:#607090;margin-top:2px}
+.score-part{font-size:13px;font-weight:700;color:#aabbd0}
+.sub-label {font-size:10px;color:#607090}
+
+/* ─── EMPTY ─── */
+.empty-state{text-align:center;padding:80px 24px}
+.empty-state h3{font-size:20px;font-weight:800;color:#aabbd0;margin-bottom:10px}
+.empty-state p {font-size:14px;color:#607090;line-height:1.7}
+
+/* ─── FOOTER ─── */
+.site-footer{
+  position:relative;z-index:1;text-align:center;
+  padding:28px 24px;border-top:1px solid rgba(255,255,255,.05);
+  font-size:12px;color:#3a4a60;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
+::-webkit-scrollbar-thumb{background:rgba(9,180,204,.2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(9,180,204,.4)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1000px){
+  .site-header{grid-template-columns:180px 1fr 180px}
+  .logo-wrap{height:86px}
+  .logo-vinschool{max-width:148px;max-height:64px}
+  .logo-onespace{width:64px;height:64px}
+}
+@media(max-width:840px){
+  .site-header{grid-template-columns:140px 1fr 140px;padding:14px}
+  .logo-wrap{height:76px;padding:8px 12px}
+  .logo-vinschool{max-width:116px;max-height:56px}
+  .logo-onespace{width:54px;height:54px}
+}
+@media(max-width:600px){
+  .site-header{grid-template-columns:100px 1fr 100px;padding:10px}
+  .hdr-title{font-size:13px}
+  .logo-wrap{height:64px;padding:6px 8px}
+  .logo-vinschool{max-width:84px;max-height:44px}.logo-onespace{width:44px;height:44px}
+  .podium-wrap{gap:6px;padding:32px 0 20px}
+  .pod1 .pod-plinth{min-width:110px}.pod2 .pod-plinth{min-width:96px}.pod3 .pod-plinth{min-width:88px}
+  .pod-name{max-width:100px;font-size:12px}
+  .nav-pill{padding:7px 16px;font-size:12.5px}
+  td,th{padding:10px 12px}
+}
+  </style>
+</head>
+<body>
+<div class="site-bg"></div>
+
+<!-- ════ HEADER ════ -->
+<header class="site-header">
+  <div class="hdr-logo-box">
+    <div class="logo-wrap">
+      <img src="assets/img/vinschool.png" alt="Vinschool" class="logo-vinschool"/>
+    </div>
+  </div>
+  <div class="hdr-center">
+    <div class="hdr-tag">WhalesBot AI Robotics & Drones 2025</div>
+    <h1 class="hdr-title">TỔNG KẾT TRẠI HÈ<br>WHALESBOT AI ROBOTICS & DRONES</h1>
+    <p class="hdr-subtitle">HÀNH TRÌNH 1 : BÌNH MINH CÔNG NGHỆ</p>
+    <p class="hdr-venue">Vinschool The Harmony &middot; 25/06/2025</p>
+  </div>
+  <div class="hdr-logo-box right">
+    <div class="logo-wrap">
+      <img src="assets/img/onespace.png" alt="Onespace" class="logo-onespace"/>
+    </div>
+  </div>
+</header>
+
+<!-- ════ NAV ════ -->
+<nav class="site-nav">
+  <button class="nav-pill on" onclick="setCat('Lớp 1-2',this)">Lớp 1-2</button>
+  <button class="nav-pill"    onclick="setCat('Lớp 3-4-5',this)">Lớp 3-4-5</button>
+  <button class="nav-pill"    onclick="setCat('THCS',this)">THCS</button>
+</nav>
+
+<!-- ════ MAIN ════ -->
+<div class="wrap">
+  <div class="upd-bar" id="updBar"></div>
+  <div class="cat-sec on" id="c-12"></div>
+  <div class="cat-sec"    id="c-345"></div>
+  <div class="cat-sec"    id="c-thcs"></div>
+</div>
+
+<footer class="site-footer">
+  &copy; 2025 WhalesBot AI Robotics & Drones · Vinschool The Harmony · Powered by Onespace Education
+</footer>
+
+<script>
+/* ── DB — same key as admin ── */
+const DB_KEY = 'whalesbot_teams_v1';
+const DB_TSK = 'whalesbot_teams_v1_ts';
+
+function loadTeams(){
+  try{ return JSON.parse(localStorage.getItem(DB_KEY))||[]; }
+  catch(e){ return []; }
+}
+
+/* ── Utils ── */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+function s2t(s){ s=parseInt(s)||0; return Math.floor(s/60)+':'+String(s%60).padStart(2,'0') }
+function ranked(teams,cat){
+  return teams
+    .filter(t=>t.cat===cat)
+    .map(t=>({...t,_s:(t.rs|0)+(t.ds|0),_t:(t.rt|0)+(t.dt|0)}))
+    .sort((a,b)=>b._s-a._s||a._t-b._t);
+}
+
+/* ── Tab switch ── */
+const catMap={'Lớp 1-2':'c-12','Lớp 3-4-5':'c-345','THCS':'c-thcs'};
+function setCat(cat,btn){
+  document.querySelectorAll('.cat-sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nav-pill').forEach(b=>b.classList.remove('on'));
+  document.getElementById(catMap[cat]).classList.add('on');
+  btn.classList.add('on');
+}
+
+/* ── Podium ── */
+function renderPodium(list){
+  if(!list.length) return '';
+  const top3  = list.slice(0,3);
+  // visual order: 2nd left, 1st center, 3rd right
+  const vis   = [top3[1],top3[0],top3[2]].filter(Boolean);
+  const pCls  = top3.length>=2 ? ['pod2','pod1','pod3'] : ['pod1'];
+
+  const items = vis.map((t,i)=>{
+    const pc  = pCls[i];
+    const num = pc==='pod1'?1:pc==='pod2'?2:3;
+    return `
+    <div class="pod ${pc}">
+      <div class="pod-order">
+        <div class="pod-avatar">${num}<span class="pod-num">${num}</span></div>
+        <div class="pod-name">${esc(t.name)}</div>
+        <div class="pod-mems">${esc(t.mem.join(', '))}</div>
+        ${t.done?`<div class="pod-score">${t._s}</div><div class="pod-time">${s2t(t._t)}</div>`:''}
+        <div class="pod-plinth"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="podium-wrap">${items}</div>`;
+}
+
+/* ── Rank table ── */
+const RBC=['rbg','rbs','rbb'];
+const TRC=['rank-g','rank-s','rank-b'];
+
+function renderTable(list){
+  if(!list.length) return '';
+  const rows=list.map((t,i)=>`
+    <tr class="${TRC[i]||''}">
+      <td class="tc"><div class="rank-badge ${RBC[i]||'rbn'}">${i+1}</div></td>
+      <td>
+        <div class="team-name">${esc(t.name)}</div>
+        <div class="team-mems">${esc(t.mem.join(', '))}</div>
+      </td>
+      <td class="tc">
+        ${t.done?`<div class="score-part">${t.rs}</div><div class="sub-label">${s2t(t.rt)}</div>`:'<span style="font-size:12px;color:#607090">—</span>'}
+      </td>
+      <td class="tc">
+        ${t.done?`<div class="score-part">${t.ds}</div><div class="sub-label">${s2t(t.dt)}</div>`:'<span style="font-size:12px;color:#607090">—</span>'}
+      </td>
+      <td class="tc">
+        ${t.done?`<div class="score-val">${t._s}</div><div class="time-val">${s2t(t._t)}</div>`:'<span style="font-size:12px;color:#607090;font-style:italic">Chưa thi</span>'}
+      </td>
+    </tr>`).join('');
+
+  return `
+  <p class="tbl-hdr">Bảng Xếp Hạng Đầy Đủ</p>
+  <div class="rtbl-wrap">
+    <table>
+      <thead><tr>
+        <th class="tc" style="width:50px">Hạng</th>
+        <th>Đội / Thành Viên</th>
+        <th class="tc">Robot</th>
+        <th class="tc">Drone</th>
+        <th class="tc">Tổng</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+/* ── Main render ── */
+function renderAll(){
+  const teams=loadTeams();
+  const ts=localStorage.getItem(DB_TSK);
+  const upd=document.getElementById('updBar');
+  upd.innerHTML=teams.length
+    ?`<span class="upd-dot"></span>Cập nhật lần cuối: ${ts||'—'} &nbsp;|&nbsp; ${teams.length} đội`
+    :'';
+
+  const CATS=[
+    {cat:'Lớp 1-2',  id:'c-12'},
+    {cat:'Lớp 3-4-5',id:'c-345'},
+    {cat:'THCS',     id:'c-thcs'},
+  ];
+
+  CATS.forEach(({cat,id})=>{
+    const list=ranked(teams,cat);
+    const el=document.getElementById(id);
+    if(!list.length){
+      el.innerHTML=`<div class="empty-state">
+        <h3>${esc(cat)}</h3>
+        <p>Chưa có dữ liệu cho bảng này.<br>Vui lòng liên hệ ban tổ chức.</p>
+      </div>`;
+      return;
+    }
+    el.innerHTML=renderPodium(list)+renderTable(list);
+  });
+}
+
+renderAll();
+setInterval(renderAll, 10000);
+</script>
+</body>
+</html>

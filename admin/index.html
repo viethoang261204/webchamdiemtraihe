@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Quản Trị – WhalesBot AI Robotics & Drones</title>
+  <link rel="icon" href="../assets/img/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+/* ─── RESET ─── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+img{display:block}
+button,input,select{font-family:inherit;outline:none}
+body{
+  font-family:'Be Vietnam Pro',sans-serif;
+  background:#070c18;color:#dce8ff;
+  min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── BG ─── */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 55% at 10% 5%,rgba(20,80,220,.08),transparent 55%),
+    radial-gradient(ellipse 70% 50% at 90% 90%,rgba(80,20,200,.06),transparent 55%),
+    linear-gradient(180deg,#070c18,#09101e);
+}
+.bg::after{content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(9,180,204,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(9,180,204,.018) 1px,transparent 1px);
+  background-size:56px 56px;
+}
+
+/* ─── LOGIN ─── */
+.login-screen{
+  position:fixed;inset:0;z-index:900;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(4,8,15,.94);
+  backdrop-filter:blur(12px);
+}
+.login-card{
+  position:relative;z-index:1;
+  background:#0f1a34;
+  border:1px solid rgba(9,180,204,.22);
+  border-radius:20px;padding:48px 44px 40px;
+  width:100%;max-width:400px;text-align:center;
+  box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 48px rgba(9,180,204,.06);
+}
+.login-logos{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px}
+.login-logos img:first-child{height:38px;width:auto;max-width:110px;object-fit:contain}
+.login-logos img:last-child {height:38px;width:38px;object-fit:contain}
+.login-card h2{font-size:21px;font-weight:900;color:#fff;margin-bottom:6px}
+.login-card p {font-size:13px;color:#607090;margin-bottom:28px;line-height:1.6}
+.fgroup{margin-bottom:15px;text-align:left}
+.flabel{display:block;font-size:11px;font-weight:700;color:#607090;
+  margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px}
+.finput{
+  width:100%;padding:11px 14px;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(9,180,204,.15);
+  border-radius:10px;color:#dce8ff;font-size:14px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.finput:focus{border-color:rgba(9,180,204,.5);box-shadow:0 0 0 3px rgba(9,180,204,.1)}
+.lerr{color:#f87171;font-size:13px;font-weight:600;display:none;margin-bottom:10px}
+.btn-login{
+  width:100%;padding:13px;border-radius:10px;border:none;
+  background:linear-gradient(135deg,#0060e0,#09b4cc);
+  color:#fff;font-size:14px;font-weight:800;
+  cursor:pointer;transition:all .2s;margin-top:6px;
+}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,120,240,.38)}
+
+/* ─── DASHBOARD ─── */
+.dashboard{
+  position:relative;z-index:1;
+  min-height:100vh;display:none;flex-direction:column;
+}
+.dashboard.on{display:flex}
+
+/* Admin header */
+.adm-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 28px;gap:16px;flex-wrap:wrap;
+  border-bottom:1px solid rgba(9,180,204,.12);
+  background:rgba(5,9,18,.93);
+  backdrop-filter:blur(20px);
+}
+.adm-hdr-left{display:flex;align-items:center;gap:14px}
+.adm-hdr-logos{display:flex;align-items:center;gap:10px}
+.adm-hdr-logos img:first-child{height:30px;width:auto;max-width:100px;object-fit:contain}
+.adm-hdr-logos img:last-child {height:30px;width:30px;object-fit:contain}
+.adm-hdr-text .brand{font-size:13px;font-weight:900;color:#fff}
+.adm-hdr-text .sub  {font-size:11px;color:#607090}
+.adm-hdr-right{display:flex;align-items:center;gap:10px}
+.adm-hdr-right span{font-size:13px;color:#607090}
+.adm-hdr-right strong{color:#09b4cc}
+
+/* ─── BUTTONS (solid, always visible) ─── */
+.btn-blue{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 22px;border-radius:9px;border:none;
+  background:#1a6cf0;color:#fff;
+  font-size:13px;font-weight:800;cursor:pointer;
+  transition:all .18s;white-space:nowrap;
+}
+.btn-blue:hover{background:#1558d0;box-shadow:0 4px 16px rgba(26,108,240,.45)}
+
+.btn-green{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 22px;border-radius:9px;border:none;
+  background:#0a9e6e;color:#fff;
+  font-size:13px;font-weight:800;cursor:pointer;
+  transition:all .18s;white-space:nowrap;
+}
+.btn-green:hover{background:#088a5e;box-shadow:0 4px 16px rgba(10,158,110,.4)}
+
+.btn-red{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 20px;border-radius:9px;
+  border:1px solid rgba(220,50,50,.4);
+  background:rgba(220,50,50,.12);color:#ff7575;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .18s;white-space:nowrap;
+}
+.btn-red:hover{background:rgba(220,50,50,.25);border-color:rgba(220,50,50,.6)}
+
+.btn-gray{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:9px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.06);color:#aabbd0;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .18s;white-space:nowrap;
+}
+.btn-gray:hover{background:rgba(255,255,255,.12);color:#dce8ff}
+
+.btn-sm{padding:6px 14px;font-size:12px}
+
+/* ─── NAV TABS ─── */
+.adm-tabs{
+  display:flex;gap:0;
+  padding:0 28px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(5,9,18,.7);
+}
+.adm-tab{
+  padding:13px 22px;border:none;border-bottom:2px solid transparent;
+  background:transparent;font-size:13.5px;font-weight:700;
+  color:#607090;cursor:pointer;transition:all .2s;margin-bottom:-1px;
+}
+.adm-tab:hover{color:#aabbd0}
+.adm-tab.on{color:#09b4cc;border-bottom-color:#09b4cc}
+
+/* ─── CONTENT ─── */
+.adm-body{flex:1;padding:28px 28px 64px;overflow-auto}
+.tab-sec{display:none}
+.tab-sec.on{display:block}
+
+/* Section row */
+.sec-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;gap:14px;flex-wrap:wrap;
+}
+.sec-top h2{font-size:19px;font-weight:800;color:#fff}
+.sec-btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Filter pills */
+.filters{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.fpill{
+  padding:6px 18px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);
+  font-size:12.5px;font-weight:700;color:#607090;cursor:pointer;transition:all .2s;
+}
+.fpill:hover,.fpill.on{
+  border-color:rgba(9,180,204,.38);color:#09b4cc;
+  background:rgba(9,180,204,.08);
+}
+
+/* ─── TABLE ─── */
+.tbl-box{
+  background:rgba(10,18,44,.8);
+  border:1px solid rgba(9,180,204,.12);
+  border-radius:16px;overflow:auto;
+  box-shadow:0 4px 28px rgba(0,0,0,.28);
+}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{
+  padding:12px 16px;text-align:left;white-space:nowrap;
+  font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:#607090;background:rgba(0,0,0,.2);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+thead th.tc{text-align:center}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(9,180,204,.04)}
+tbody td{padding:12px 16px;vertical-align:middle}
+tbody td.tc{text-align:center}
+
+/* Category pills */
+.cpill{display:inline-block;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:800}
+.c12  {background:rgba(9,180,204,.12);color:#09b4cc; border:1px solid rgba(9,180,204,.25)}
+.c345 {background:rgba(168,85,247,.12);color:#c084fc; border:1px solid rgba(168,85,247,.25)}
+.cthcs{background:rgba(16,185,130,.12);color:#34d399; border:1px solid rgba(16,185,130,.25)}
+
+/* Action buttons in table */
+.row-acts{display:flex;gap:8px;justify-content:center}
+.act{
+  padding:5px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid;transition:all .18s;
+}
+.act-edit{background:rgba(26,108,240,.1);border-color:rgba(26,108,240,.3);color:#6aabff}
+.act-edit:hover{background:rgba(26,108,240,.22)}
+.act-del {background:rgba(220,50,50,.08);border-color:rgba(220,50,50,.28);color:#ff7575}
+.act-del:hover{background:rgba(220,50,50,.2)}
+
+/* Score inputs */
+.si{
+  width:80px;padding:7px 10px;border-radius:8px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);
+  color:#dce8ff;font-size:14px;text-align:center;
+  transition:all .18s;
+}
+.si:focus{border-color:rgba(9,180,204,.5);box-shadow:0 0 0 2px rgba(9,180,204,.1)}
+.si.dirty{border-color:rgba(255,200,0,.5);background:rgba(255,200,0,.06)}
+
+.robot-col{border-left:2px solid rgba(9,180,204,.15)}
+.drone-col{border-left:2px solid rgba(168,85,247,.15)}
+.tot-score{font-weight:900;font-size:18px;color:#09b4cc}
+.tot-time {font-size:11px;color:#607090;margin-top:2px}
+
+.badge-done   {display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;background:rgba(16,185,130,.12);color:#34d399;border:1px solid rgba(16,185,130,.25)}
+.badge-pending{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,255,255,.05);color:#607090;border:1px solid rgba(255,255,255,.1)}
+
+/* ─── EMPTY STATE ─── */
+.empty{
+  text-align:center;padding:72px 24px;
+}
+.empty h3{font-size:18px;font-weight:800;color:#aabbd0;margin-bottom:8px}
+.empty p {font-size:14px;color:#607090;margin-bottom:24px}
+
+/* ─── MODAL ─── */
+.modal-bg{
+  position:fixed;inset:0;z-index:800;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(4,8,15,.82);backdrop-filter:blur(8px);
+}
+.modal-bg.on{display:flex}
+.modal{
+  background:#0f1a34;
+  border:1px solid rgba(9,180,204,.2);
+  border-radius:18px;width:100%;max-width:500px;
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  overflow:hidden;max-height:92vh;display:flex;flex-direction:column;
+}
+.mhdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 24px;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.mhdr h3{font-size:16px;font-weight:800;color:#fff}
+.mclose{
+  width:30px;height:30px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.07);color:#607090;
+  font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .18s;
+}
+.mclose:hover{background:rgba(220,50,50,.18);color:#ff7575}
+.mbody{padding:22px 24px;overflow-y:auto;flex:1}
+.mfoot{
+  display:flex;justify-content:flex-end;gap:10px;
+  padding:14px 24px;border-top:1px solid rgba(255,255,255,.07);
+}
+
+/* Form in modal */
+.mgroup{margin-bottom:16px}
+.mlabel{display:block;font-size:11px;font-weight:700;color:#607090;margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px}
+.minput,.mselect{
+  width:100%;padding:10px 14px;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(9,180,204,.15);
+  border-radius:9px;color:#dce8ff;font-size:14px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.minput:focus,.mselect:focus{border-color:rgba(9,180,204,.5);box-shadow:0 0 0 3px rgba(9,180,204,.1)}
+.mselect{
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23607090' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;
+}
+.mselect option{background:#0f1a34;color:#dce8ff}
+
+/* Members */
+.mem-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.mem-row{display:flex;gap:8px;align-items:center}
+.mem-row .minput{flex:1;padding:8px 12px;font-size:13px}
+.mem-rem{
+  flex-shrink:0;width:28px;height:28px;border-radius:7px;border:none;
+  background:rgba(220,50,50,.1);color:#ff7575;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .18s;
+}
+.mem-rem:hover{background:rgba(220,50,50,.22)}
+
+/* ─── PREVIEW BXH ─── */
+.pv-cat{margin-bottom:32px}
+.pv-title{
+  font-size:15px;font-weight:800;color:#09b4cc;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid rgba(9,180,204,.15);
+}
+.rb{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;margin:0 auto}
+.rb-g{background:rgba(215,155,24,.12);color:#d99b18;border:1px solid rgba(215,155,24,.3)}
+.rb-s{background:rgba(175,200,228,.08);color:#afc8e4;border:1px solid rgba(175,200,228,.22)}
+.rb-b{background:rgba(176,110,40,.1); color:#b06e28;border:1px solid rgba(176,110,40,.26)}
+.rb-n{background:rgba(255,255,255,.05);color:#607090;font-size:12px}
+.rg td{background:rgba(215,155,24,.06)}
+.rs td{background:rgba(175,200,228,.05)}
+.rb2 td{background:rgba(176,110,40,.05)}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:999;
+  background:rgba(8,18,40,.97);
+  border:1px solid rgba(16,185,130,.38);border-radius:12px;
+  padding:12px 20px;display:flex;align-items:center;gap:10px;
+  color:#34d399;font-weight:700;font-size:13px;
+  transform:translateY(80px);opacity:0;pointer-events:none;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 8px 28px rgba(0,0,0,.4);
+}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.err{border-color:rgba(220,50,50,.38);color:#ff7575}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
+::-webkit-scrollbar-thumb{background:rgba(9,180,204,.22);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(9,180,204,.42)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){.adm-hdr{padding:10px 16px}.adm-body{padding:20px 16px 48px}.adm-tabs{padding:0 16px}}
+@media(max-width:600px){.adm-tab{padding:11px 14px;font-size:12.5px}.modal{margin:14px;max-height:calc(100vh - 28px)}.login-card{padding:36px 22px 30px;margin:14px}}
+  </style>
+</head>
+<body>
+<div class="bg"></div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logos">
+      <img src="../assets/img/vinschool.png" alt="Vinschool"/>
+      <img src="../assets/img/onespace.png"  alt="Onespace"/>
+    </div>
+    <h2>Quản Trị Hệ Thống</h2>
+    <p>Tổng Kết Trại Hè WhalesBot 2025<br>Vinschool The Harmony</p>
+    <div class="fgroup">
+      <label class="flabel">Tài Khoản</label>
+      <input class="finput" id="lu" type="text" placeholder="admin" autocomplete="off"/>
+    </div>
+    <div class="fgroup">
+      <label class="flabel">Mật Khẩu</label>
+      <input class="finput" id="lp" type="password" placeholder="••••••"
+             onkeydown="if(event.key==='Enter')login()"/>
+    </div>
+    <div class="lerr" id="lerr">Tài khoản hoặc mật khẩu không đúng.</div>
+    <button class="btn-login" onclick="login()">Đăng Nhập</button>
+  </div>
+</div>
+
+<!-- ══════════ DASHBOARD ══════════ -->
+<div class="dashboard" id="dash">
+
+  <!-- Header -->
+  <header class="adm-hdr">
+    <div class="adm-hdr-left">
+      <div class="adm-hdr-logos">
+        <img src="../assets/img/vinschool.png" alt="Vinschool"/>
+        <img src="../assets/img/onespace.png"  alt="Onespace"/>
+      </div>
+      <div class="adm-hdr-text">
+        <div class="brand">WhalesBot AI Robotics & Drones</div>
+        <div class="sub">Vinschool The Harmony · Quản Trị</div>
+      </div>
+    </div>
+    <div class="adm-hdr-right">
+      <span>Xin chào, <strong>Admin</strong></span>
+      <button class="btn-gray btn-sm" onclick="window.open('../','_blank')">Xem BXH</button>
+      <button class="btn-red btn-sm" onclick="logout()">Đăng Xuất</button>
+    </div>
+  </header>
+
+  <!-- Nav Tabs -->
+  <nav class="adm-tabs">
+    <button class="adm-tab on"  id="nt-teams"   onclick="goTab('teams')">Quản Lý Đội</button>
+    <button class="adm-tab"     id="nt-scores"  onclick="goTab('scores')">Nhập Điểm</button>
+    <button class="adm-tab"     id="nt-preview" onclick="goTab('preview')">Xem Kết Quả</button>
+  </nav>
+
+  <!-- Body -->
+  <div class="adm-body">
+
+    <!-- ── TAB: TEAMS ── -->
+    <section class="tab-sec on" id="ts-teams">
+      <div class="sec-top">
+        <h2>Danh Sách Đội</h2>
+        <div class="sec-btns">
+          <button class="btn-red"   onclick="confirmDelAll()">Xóa Tất Cả</button>
+          <button class="btn-gray"  onclick="downloadTemplate()">Tải Mẫu Excel</button>
+          <label  class="btn-green" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:9px 22px;border-radius:9px;border:none;font-size:13px;font-weight:800;white-space:nowrap">
+            Import Excel
+            <input type="file" id="xlImport" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)"/>
+          </label>
+          <button class="btn-blue"  onclick="openModal()">+ Thêm Đội Mới</button>
+        </div>
+      </div>
+      <div class="filters" id="tf">
+        <button class="fpill on" onclick="tFilter('all',this)">Tất Cả</button>
+        <button class="fpill"    onclick="tFilter('Lớp 1-2',this)">1-2</button>
+        <button class="fpill"    onclick="tFilter('Lớp 3-4-5',this)">3-4-5</button>
+        <button class="fpill"    onclick="tFilter('THCS',this)">THCS</button>
+      </div>
+      <div class="tbl-box" id="teamsWrap">
+        <table><thead><tr>
+          <th style="width:42px">#</th>
+          <th>Tên Đội</th>
+          <th>Bảng</th>
+          <th>Thành Viên</th>
+          <th class="tc" style="width:90px">Tổng Điểm</th>
+          <th class="tc" style="width:130px">Thao Tác</th>
+        </tr></thead>
+        <tbody id="tBody"></tbody></table>
+      </div>
+    </section>
+
+    <!-- ── TAB: SCORES ── -->
+    <section class="tab-sec" id="ts-scores">
+      <div class="sec-top">
+        <h2>Nhập Điểm Thi Đấu</h2>
+        <div class="sec-btns">
+          <button class="btn-blue"  onclick="saveScores()">Lưu Tất Cả</button>
+          <button class="btn-green" onclick="exportXL()">Xuất Excel</button>
+        </div>
+      </div>
+      <div class="filters" id="sf">
+        <button class="fpill on" onclick="sFilter('all',this)">Tất Cả</button>
+        <button class="fpill"    onclick="sFilter('Lớp 1-2',this)">1-2</button>
+        <button class="fpill"    onclick="sFilter('Lớp 3-4-5',this)">3-4-5</button>
+        <button class="fpill"    onclick="sFilter('THCS',this)">THCS</button>
+      </div>
+      <div class="tbl-box">
+        <div style="overflow-x:auto">
+        <table style="min-width:900px"><thead><tr>
+          <th style="width:38px">#</th>
+          <th>Đội</th>
+          <th>Bảng</th>
+          <th class="tc robot-col">Robot — Điểm</th>
+          <th class="tc robot-col">Robot — Giây</th>
+          <th class="tc drone-col">Drone — Điểm</th>
+          <th class="tc drone-col">Drone — Giây</th>
+          <th class="tc" style="width:90px">Tổng</th>
+          <th class="tc" style="width:90px">Trạng Thái</th>
+        </tr></thead>
+        <tbody id="sBody"></tbody></table>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#607090;margin-top:12px;text-align:right">
+        Thời gian nhập bằng giây (VD: 90 = 1:30). Nhấn <strong style="color:#09b4cc">Lưu Tất Cả</strong> sau khi chỉnh xong.
+      </p>
+    </section>
+
+    <!-- ── TAB: PREVIEW ── -->
+    <section class="tab-sec" id="ts-preview">
+      <div class="sec-top">
+        <h2>Xem Kết Quả</h2>
+        <div class="sec-btns">
+          <button class="btn-green" onclick="exportXL()">Xuất Excel</button>
+        </div>
+      </div>
+      <div id="pvBody"></div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ══════════ MODAL: TEAM FORM ══════════ -->
+<div class="modal-bg" id="teamModal">
+  <div class="modal">
+    <div class="mhdr">
+      <h3 id="mTitle">Thêm Đội Mới</h3>
+      <button class="mclose" onclick="closeModal()">×</button>
+    </div>
+    <div class="mbody">
+      <div class="mgroup">
+        <label class="mlabel">Tên Đội *</label>
+        <input class="minput" id="fName" type="text" placeholder="VD: GRB1, Kidstech 01..."/>
+      </div>
+      <div class="mgroup">
+        <label class="mlabel">Bảng Đấu *</label>
+        <select class="mselect" id="fCat">
+          <option value="Lớp 1-2">1-2</option>
+          <option value="Lớp 3-4-5">3-4-5</option>
+          <option value="THCS">THCS</option>
+        </select>
+      </div>
+      <div class="mgroup">
+        <label class="mlabel">Thành Viên *</label>
+        <div class="mem-list" id="memList"></div>
+        <button class="btn-gray btn-sm" style="margin-top:6px" onclick="addMem('')">+ Thêm thành viên</button>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn-gray" onclick="closeModal()">Hủy</button>
+      <button class="btn-blue" onclick="submitModal()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: CONFIRM ══════════ -->
+<div class="modal-bg" id="confirmModal">
+  <div class="modal" style="max-width:420px">
+    <div class="mhdr">
+      <h3>Xác Nhận</h3>
+      <button class="mclose" onclick="closeConfirm()">×</button>
+    </div>
+    <div class="mbody">
+      <p id="confirmMsg" style="font-size:15px;color:#dce8ff;line-height:1.6"></p>
+      <p style="font-size:13px;color:#607090;margin-top:8px">Thao tác này không thể hoàn tác.</p>
+    </div>
+    <div class="mfoot">
+      <button class="btn-gray" onclick="closeConfirm()">Hủy</button>
+      <button class="btn-red"  onclick="doConfirm()">Xác Nhận Xóa</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: IMPORT PREVIEW ══════════ -->
+<div class="modal-bg" id="importModal">
+  <div class="modal" style="max-width:640px">
+    <div class="mhdr">
+      <h3>Xác Nhận Import Excel</h3>
+      <button class="mclose" onclick="closeImport()">×</button>
+    </div>
+    <div class="mbody">
+      <div id="importSummary" style="margin-bottom:16px;padding:12px 16px;background:rgba(9,180,204,.06);border:1px solid rgba(9,180,204,.15);border-radius:10px;font-size:13.5px;color:#dce8ff"></div>
+      <div style="max-height:320px;overflow-y:auto;border:1px solid rgba(255,255,255,.07);border-radius:10px">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead>
+            <tr style="background:rgba(0,0,0,.3)">
+              <th style="padding:9px 12px;text-align:left;color:#607090;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.06)">#</th>
+              <th style="padding:9px 12px;text-align:left;color:#607090;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.06)">Tên Đội</th>
+              <th style="padding:9px 12px;text-align:left;color:#607090;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.06)">Bảng</th>
+              <th style="padding:9px 12px;text-align:left;color:#607090;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.06)">Thành Viên</th>
+              <th style="padding:9px 12px;text-align:center;color:#607090;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid rgba(255,255,255,.06)">OK</th>
+            </tr>
+          </thead>
+          <tbody id="importBody"></tbody>
+        </table>
+      </div>
+      <div id="importErr" style="margin-top:12px;font-size:12.5px;color:#f87171;display:none"></div>
+      <div style="margin-top:16px">
+        <p style="font-size:13px;color:#aabbd0;margin-bottom:10px;font-weight:700">Chế độ import:</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:9px 16px;border-radius:9px;border:1px solid rgba(9,180,204,.25);background:rgba(9,180,204,.06)">
+            <input type="radio" name="importMode" value="append" checked style="accent-color:#09b4cc"/>
+            <span style="font-size:13px;font-weight:700;color:#dce8ff">Thêm vào danh sách hiện tại</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:9px 16px;border-radius:9px;border:1px solid rgba(220,50,50,.2);background:rgba(220,50,50,.06)">
+            <input type="radio" name="importMode" value="replace" style="accent-color:#ff7575"/>
+            <span style="font-size:13px;font-weight:700;color:#dce8ff">Xóa hết &amp; thay thế</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn-gray" onclick="closeImport()">Hủy</button>
+      <button class="btn-blue" id="importConfirmBtn" onclick="confirmImport()">Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script>
+/* ════════════════════════════════════════
+   DATABASE — localStorage
+════════════════════════════════════════ */
+const DB = {
+  KEY : 'whalesbot_teams_v1',
+  TSK : 'whalesbot_teams_v1_ts',
+
+  load() {
+    try { return JSON.parse(localStorage.getItem(this.KEY)) || []; }
+    catch(e) { return []; }
+  },
+
+  save(arr) {
+    localStorage.setItem(this.KEY, JSON.stringify(arr));
+    localStorage.setItem(this.TSK, new Date().toLocaleString('vi-VN'));
+  },
+
+  clear() {
+    localStorage.removeItem(this.KEY);
+    localStorage.removeItem(this.TSK);
+  }
+};
+
+let teams  = [];
+let nextId = 1;
+
+function loadDB() {
+  teams  = DB.load();
+  nextId = teams.length ? Math.max(...teams.map(t => t.id)) + 1 : 1;
+}
+
+function saveDB() {
+  DB.save(teams);
+}
+
+/* ════════════════════════════════════════
+   AUTH
+════════════════════════════════════════ */
+function login() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value;
+  const e = document.getElementById('lerr');
+  if (u === 'admin' && p === '1') {
+    loadDB();
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dash').classList.add('on');
+    renderTeams();
+  } else {
+    e.style.display = 'block';
+    document.getElementById('lp').value = '';
+    setTimeout(() => e.style.display = 'none', 3000);
+  }
+}
+
+function logout() {
+  document.getElementById('dash').classList.remove('on');
+  document.getElementById('loginScreen').style.display = '';
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+  teams = []; nextId = 1;
+}
+
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+function goTab(id) {
+  ['teams','scores','preview'].forEach(t => {
+    document.getElementById('ts-' + t).classList.remove('on');
+    document.getElementById('nt-' + t).classList.remove('on');
+  });
+  document.getElementById('ts-' + id).classList.add('on');
+  document.getElementById('nt-' + id).classList.add('on');
+  if (id === 'teams')   renderTeams();
+  if (id === 'scores')  renderScores();
+  if (id === 'preview') renderPreview();
+}
+
+/* ════════════════════════════════════════
+   UTILS
+════════════════════════════════════════ */
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function s2t(s) {
+  s = parseInt(s) || 0;
+  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+function total(t) {
+  return { sc: (t.rs|0)+(t.ds|0), tm: (t.rt|0)+(t.dt|0) };
+}
+function catClass(c) {
+  return c === 'Lớp 1-2' ? 'c12' : c === 'Lớp 3-4-5' ? 'c345' : 'cthcs';
+}
+function catPill(c) {
+  return `<span class="cpill ${catClass(c)}">${esc(c)}</span>`;
+}
+function ranked(cat) {
+  return teams
+    .filter(t => t.cat === cat)
+    .map(t => ({...t, _s:(t.rs|0)+(t.ds|0), _t:(t.rt|0)+(t.dt|0)}))
+    .sort((a,b) => b._s - a._s || a._t - b._t);
+}
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+let _tid;
+function toast(msg, err=false) {
+  const el = document.getElementById('toast');
+  clearTimeout(_tid);
+  document.getElementById('toastMsg').textContent = msg;
+  el.className = 'toast on' + (err ? ' err' : '');
+  _tid = setTimeout(() => el.className = 'toast', 2800);
+}
+
+/* ════════════════════════════════════════
+   TEAMS TAB — CRUD
+════════════════════════════════════════ */
+let tFil = 'all';
+
+function tFilter(cat, btn) {
+  tFil = cat;
+  document.querySelectorAll('#tf .fpill').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderTeams();
+}
+
+function renderTeams() {
+  const list = tFil === 'all' ? teams : teams.filter(t => t.cat === tFil);
+  const body = document.getElementById('tBody');
+
+  if (!list.length) {
+    body.innerHTML = `<tr><td colspan="6">
+      <div class="empty">
+        <h3>Chưa có đội nào${tFil !== 'all' ? ' trong bảng ' + tFil : ''}</h3>
+        <p>Nhấn nút <strong style="color:#1a6cf0">+ Thêm Đội Mới</strong> bên trên để bắt đầu.</p>
+      </div>
+    </td></tr>`;
+    return;
+  }
+
+  body.innerHTML = list.map((t, i) => {
+    const T = total(t);
+    return `<tr>
+      <td style="color:#607090;font-weight:600">${i+1}</td>
+      <td style="font-weight:800">${esc(t.name)}</td>
+      <td>${catPill(t.cat)}</td>
+      <td style="font-size:12px;color:#8aabcc;max-width:260px">${esc(t.mem.join(', '))}</td>
+      <td class="tc">
+        ${t.done
+          ? `<span style="font-weight:900;color:#09b4cc">${T.sc}</span>`
+          : `<span style="font-size:12px;color:#607090;font-style:italic">Chưa thi</span>`}
+      </td>
+      <td class="tc">
+        <div class="row-acts">
+          <button class="act act-edit" onclick="openModal(${t.id})">Sửa</button>
+          <button class="act act-del"  onclick="confirmDel(${t.id})">Xóa</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── MODAL ── */
+let editId = null;
+
+function openModal(id = null) {
+  editId = id;
+  const ml   = document.getElementById('memList');
+  const name = document.getElementById('fName');
+  const cat  = document.getElementById('fCat');
+  ml.innerHTML = '';
+
+  if (id) {
+    const t = teams.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('mTitle').textContent = 'Chỉnh Sửa Đội';
+    name.value = t.name;
+    cat.value  = t.cat;
+    t.mem.forEach(m => addMem(m));
+  } else {
+    document.getElementById('mTitle').textContent = 'Thêm Đội Mới';
+    name.value = '';
+    cat.value  = 'Lớp 1-2';
+    addMem('');
+  }
+
+  document.getElementById('teamModal').classList.add('on');
+  setTimeout(() => name.focus(), 80);
+}
+
+function closeModal() {
+  document.getElementById('teamModal').classList.remove('on');
+  editId = null;
+}
+
+function addMem(val) {
+  const ml  = document.getElementById('memList');
+  const row = document.createElement('div');
+  row.className = 'mem-row';
+  row.innerHTML = `
+    <input class="minput mem-inp" type="text" placeholder="Họ và tên thành viên" value="${esc(val)}"/>
+    <button class="mem-rem" onclick="remMem(this)" type="button">×</button>`;
+  ml.appendChild(row);
+}
+
+function remMem(btn) {
+  const ml = document.getElementById('memList');
+  if (ml.children.length <= 1) { toast('Phải có ít nhất 1 thành viên.', true); return; }
+  btn.closest('.mem-row').remove();
+}
+
+function submitModal() {
+  const name = document.getElementById('fName').value.trim();
+  const cat  = document.getElementById('fCat').value;
+  const mems = [...document.querySelectorAll('.mem-inp')]
+               .map(i => i.value.trim()).filter(Boolean);
+
+  if (!name) { toast('Vui lòng nhập tên đội.', true); return; }
+  if (!mems.length) { toast('Cần ít nhất 1 thành viên.', true); return; }
+
+  if (editId) {
+    const t = teams.find(x => x.id === editId);
+    if (t) { t.name = name; t.cat = cat; t.mem = mems; }
+    toast('Đã cập nhật đội ' + name);
+  } else {
+    teams.push({ id:nextId++, name, cat, mem:mems, rs:0, rt:0, ds:0, dt:0, done:false });
+    toast('Đã thêm đội ' + name);
+  }
+
+  saveDB();
+  closeModal();
+  renderTeams();
+}
+
+/* ── DELETE ── */
+let _confirmAction = null;
+
+function confirmDel(id) {
+  const t = teams.find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('confirmMsg').textContent = `Xóa đội "${t.name}"?`;
+  _confirmAction = () => {
+    teams = teams.filter(x => x.id !== id);
+    saveDB(); renderTeams();
+    toast('Đã xóa đội ' + t.name);
+  };
+  document.getElementById('confirmModal').classList.add('on');
+}
+
+function confirmDelAll() {
+  if (!teams.length) { toast('Danh sách đã trống.', true); return; }
+  document.getElementById('confirmMsg').textContent =
+    `Xóa toàn bộ ${teams.length} đội và tất cả dữ liệu điểm?`;
+  _confirmAction = () => {
+    teams = []; nextId = 1; DB.clear();
+    renderTeams();
+    toast('Đã xóa tất cả dữ liệu.');
+  };
+  document.getElementById('confirmModal').classList.add('on');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmModal').classList.remove('on');
+  _confirmAction = null;
+}
+
+function doConfirm() {
+  if (_confirmAction) _confirmAction();
+  closeConfirm();
+}
+
+/* ════════════════════════════════════════
+   SCORES TAB
+════════════════════════════════════════ */
+let sFil = 'all';
+
+function sFilter(cat, btn) {
+  sFil = cat;
+  document.querySelectorAll('#sf .fpill').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderScores();
+}
+
+function renderScores() {
+  const src = sFil === 'all' ? teams : teams.filter(t => t.cat === sFil);
+  const body = document.getElementById('sBody');
+
+  if (!src.length) {
+    body.innerHTML = `<tr><td colspan="9">
+      <div class="empty"><h3>Chưa có đội</h3><p>Thêm đội ở tab "Quản Lý Đội" trước.</p></div>
+    </td></tr>`;
+    return;
+  }
+
+  body.innerHTML = src.map((t, i) => {
+    const T = total(t);
+    return `<tr data-id="${t.id}">
+      <td style="color:#607090;font-weight:600">${i+1}</td>
+      <td>
+        <div style="font-weight:800">${esc(t.name)}</div>
+        <div style="font-size:11px;color:#607090;margin-top:2px">${esc(t.mem.join(', '))}</div>
+      </td>
+      <td>${catPill(t.cat)}</td>
+      <td class="tc robot-col"><input class="si" type="number" min="0" max="999" value="${t.rs}" oninput="liveCalc(${t.id})"/></td>
+      <td class="tc robot-col"><input class="si" type="number" min="0" max="999" value="${t.rt}" oninput="liveCalc(${t.id})"/></td>
+      <td class="tc drone-col"><input class="si" type="number" min="0" max="999" value="${t.ds}" oninput="liveCalc(${t.id})"/></td>
+      <td class="tc drone-col"><input class="si" type="number" min="0" max="999" value="${t.dt}" oninput="liveCalc(${t.id})"/></td>
+      <td class="tc">
+        <div class="tot-score" id="ts-${t.id}">${T.sc}</div>
+        <div class="tot-time"  id="tt-${t.id}">${s2t(T.tm)}</div>
+      </td>
+      <td class="tc" id="st-${t.id}">
+        ${t.done ? '<span class="badge-done">Hoàn thành</span>' : '<span class="badge-pending">Chưa thi</span>'}
+      </td>
+    </tr>`;
+  }).join('');
+
+  body.querySelectorAll('.si').forEach(i => i.addEventListener('change', () => i.classList.add('dirty')));
+}
+
+function liveCalc(id) {
+  const row = document.querySelector(`tr[data-id="${id}"]`);
+  if (!row) return;
+  const ins = row.querySelectorAll('.si');
+  const s = (parseInt(ins[0].value)||0) + (parseInt(ins[2].value)||0);
+  const t = (parseInt(ins[1].value)||0) + (parseInt(ins[3].value)||0);
+  document.getElementById('ts-' + id).textContent = s;
+  document.getElementById('tt-' + id).textContent = s2t(t);
+  ins.forEach(i => i.classList.add('dirty'));
+}
+
+function saveScores() {
+  document.querySelectorAll('#sBody tr[data-id]').forEach(row => {
+    const id  = parseInt(row.dataset.id);
+    const t   = teams.find(x => x.id === id);
+    if (!t) return;
+    const ins = row.querySelectorAll('.si');
+    t.rs = parseInt(ins[0].value)||0;
+    t.rt = parseInt(ins[1].value)||0;
+    t.ds = parseInt(ins[2].value)||0;
+    t.dt = parseInt(ins[3].value)||0;
+    t.done = (t.rs + t.ds) > 0;
+    ins.forEach(i => i.classList.remove('dirty'));
+    const st = document.getElementById('st-' + id);
+    if (st) st.innerHTML = t.done
+      ? '<span class="badge-done">Hoàn thành</span>'
+      : '<span class="badge-pending">Chưa thi</span>';
+  });
+  saveDB();
+  toast('Đã lưu điểm thành công!');
+}
+
+/* ════════════════════════════════════════
+   PREVIEW TAB
+════════════════════════════════════════ */
+function renderPreview() {
+  const CATS = ['Lớp 1-2','Lớp 3-4-5','THCS'];
+  const RBC  = ['rb-g','rb-s','rb-b'];
+  const TRC  = ['rg','rs','rb2'];
+
+  const html = CATS.map(cat => {
+    const list = ranked(cat);
+    if (!list.length) return `
+      <div class="pv-cat">
+        <div class="pv-title">${esc(cat)}</div>
+        <p style="color:#607090;font-size:14px">Chưa có đội nào trong bảng này.</p>
+      </div>`;
+
+    const rows = list.map((t, i) => {
+      const T = total(t);
+      const rb = RBC[i] || 'rb-n';
+      const tr = TRC[i] || '';
+      return `<tr class="${tr}">
+        <td class="tc"><div class="rb ${rb}">${i+1}</div></td>
+        <td>
+          <div style="font-weight:800">${esc(t.name)}</div>
+          <div style="font-size:11px;color:#607090;margin-top:2px">${esc(t.mem.join(', '))}</div>
+        </td>
+        <td class="tc">
+          ${t.done ? `<div style="font-weight:700">${t.rs}</div><div style="font-size:11px;color:#607090">${s2t(t.rt)}</div>` : '—'}
+        </td>
+        <td class="tc">
+          ${t.done ? `<div style="font-weight:700">${t.ds}</div><div style="font-size:11px;color:#607090">${s2t(t.dt)}</div>` : '—'}
+        </td>
+        <td class="tc">
+          ${t.done
+            ? `<div style="font-weight:900;font-size:18px;color:#09b4cc">${T.sc}</div><div style="font-size:11px;color:#607090">${s2t(T.tm)}</div>`
+            : `<span style="font-size:12px;color:#607090">Chưa thi</span>`}
+        </td>
+      </tr>`;
+    }).join('');
+
+    return `
+    <div class="pv-cat">
+      <div class="pv-title">${esc(cat)}</div>
+      <div class="tbl-box">
+        <table><thead><tr>
+          <th class="tc" style="width:46px">Hạng</th>
+          <th>Đội / Thành Viên</th>
+          <th class="tc">Robot</th>
+          <th class="tc">Drone</th>
+          <th class="tc">Tổng</th>
+        </tr></thead>
+        <tbody>${rows}</tbody></table>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('pvBody').innerHTML = html;
+}
+
+/* ════════════════════════════════════════
+   EXPORT EXCEL
+════════════════════════════════════════ */
+function exportXL() {
+  if (typeof XLSX === 'undefined') { toast('Chưa tải được thư viện XLSX.', true); return; }
+  const wb  = XLSX.utils.book_new();
+  const H1  = 'TỔNG KẾT TRẠI HÈ WHALESBOT AI ROBOTICS & DRONES';
+  const H2  = 'HÀNH TRÌNH 1 : BÌNH MINH CÔNG NGHỆ — Vinschool The Harmony';
+  const CATS = [
+    {cat:'Lớp 1-2', sn:'Lop 1-2'},
+    {cat:'Lớp 3-4-5',sn:'Lop 3-4-5'},
+    {cat:'THCS',    sn:'THCS'},
+  ];
+
+  CATS.forEach(({cat, sn}) => {
+    const list = ranked(cat);
+    const rows = [[H1],[H2],['Bảng: '+cat],[],
+      ['Hạng','Đội','Thành Viên','Robot Điểm','Robot Giây','Drone Điểm','Drone Giây','Tổng Điểm','Tổng Giây']];
+    list.forEach((t,i) => {
+      const T = total(t);
+      rows.push([i+1,t.name,t.mem.join(', '),t.rs,t.rt,t.ds,t.dt,T.sc,T.tm]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']   = [{wch:6},{wch:24},{wch:50},{wch:13},{wch:12},{wch:13},{wch:12},{wch:12},{wch:11}];
+    ws['!merges'] = [{s:{r:0,c:0},e:{r:0,c:8}},{s:{r:1,c:0},e:{r:1,c:8}},{s:{r:2,c:0},e:{r:2,c:8}}];
+    XLSX.utils.book_append_sheet(wb, ws, sn);
+  });
+
+  const allR = [[H1],[H2],[],
+    ['STT','Đội','Bảng','Thành Viên','Robot Điểm','Robot Giây','Drone Điểm','Drone Giây','Tổng Điểm','Tổng Giây']];
+  teams.forEach((t,i) => {
+    const T = total(t);
+    allR.push([i+1,t.name,t.cat,t.mem.join(', '),t.rs,t.rt,t.ds,t.dt,T.sc,T.tm]);
+  });
+  const wsA = XLSX.utils.aoa_to_sheet(allR);
+  wsA['!cols']   = [{wch:5},{wch:24},{wch:12},{wch:48},{wch:13},{wch:12},{wch:13},{wch:12},{wch:12},{wch:11}];
+  wsA['!merges'] = [{s:{r:0,c:0},e:{r:0,c:9}},{s:{r:1,c:0},e:{r:1,c:9}}];
+  XLSX.utils.book_append_sheet(wb, wsA, 'Tong Hop');
+
+  const d = new Date().toLocaleDateString('vi-VN').replace(/\//g,'-');
+  XLSX.writeFile(wb, `BXH_WhalesBot_${d}.xlsx`);
+  toast('Xuất Excel thành công!');
+}
+
+/* ════════════════════════════════════════
+   IMPORT EXCEL
+════════════════════════════════════════ */
+let _importRows = [];
+
+/* ── Download template ── */
+function downloadTemplate() {
+  if (typeof XLSX === 'undefined') { toast('Chưa tải được thư viện XLSX.', true); return; }
+
+  const rows = [
+    ['DANH SÁCH ĐỘI – WHALESBOT AI ROBOTICS & DRONES 2025'],
+    ['Hướng dẫn: Điền từ dòng 4 trở xuống. Cột Bảng nhập đúng: Lớp 1-2 / Lớp 3-4-5 / THCS'],
+    [],
+    ['Tên Đội','Bảng','Thành Viên 1','Thành Viên 2','Thành Viên 3','Thành Viên 4'],
+    ['GRB1','Lớp 1-2','Nguyễn Văn A','Trần Thị B','',''],
+    ['Kidstech 01','Lớp 3-4-5','Phạm Minh C','Lê Thu D','Hoàng Gia E',''],
+    ['Team THCS','THCS','Đỗ Quang F','Vũ Minh G','Ngô Thị H','Bùi Hữu I'],
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{wch:26},{wch:14},{wch:22},{wch:22},{wch:22},{wch:22}];
+  ws['!merges'] = [
+    {s:{r:0,c:0},e:{r:0,c:5}},
+    {s:{r:1,c:0},e:{r:1,c:5}},
+  ];
+
+  // Style header row (row index 3 = row 4)
+  const headerCells = ['A4','B4','C4','D4','E4','F4'];
+  headerCells.forEach(addr => {
+    if (!ws[addr]) return;
+    ws[addr].s = {
+      font:{bold:true,color:{rgb:'09B4CC'}},
+      fill:{fgColor:{rgb:'071428'}},
+      border:{bottom:{style:'thin',color:{rgb:'607090'}}},
+    };
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Danh Sach Doi');
+  XLSX.writeFile(wb, 'mau_nhap_doi_whalesbot.xlsx');
+  toast('Đã tải file mẫu!');
+}
+
+/* ── Parse & preview ── */
+const CAT_MAP = {
+  'lớp 1-2':'Lớp 1-2','1-2':'Lớp 1-2','lop 1-2':'Lớp 1-2','12':'Lớp 1-2',
+  'lớp 3-4-5':'Lớp 3-4-5','3-4-5':'Lớp 3-4-5','lop 3-4-5':'Lớp 3-4-5','345':'Lớp 3-4-5',
+  'thcs':'THCS',
+};
+function normalCat(v) {
+  return CAT_MAP[String(v||'').trim().toLowerCase()] || null;
+}
+
+function importExcel(inp) {
+  if (!inp.files || !inp.files[0]) return;
+  if (typeof XLSX === 'undefined') { toast('Chưa tải được thư viện XLSX.', true); return; }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb  = XLSX.read(e.target.result, {type:'binary'});
+      const ws  = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+
+      // Find header row (contains "Tên Đội")
+      let hdrRow = -1;
+      for (let i = 0; i < Math.min(raw.length, 10); i++) {
+        const r = raw[i].map(c => String(c).trim().toLowerCase());
+        if (r.some(c => c.includes('tên đội') || c.includes('ten doi') || c === 'tên đội')) {
+          hdrRow = i; break;
+        }
+      }
+      if (hdrRow < 0) {
+        toast('Không tìm thấy dòng tiêu đề (Tên Đội).', true); inp.value=''; return;
+      }
+
+      // Map column indices from header
+      const hdr  = raw[hdrRow].map(c => String(c).trim().toLowerCase());
+      const iName = hdr.findIndex(c => c.includes('tên đội') || c.includes('ten doi') || c === 'tên đội');
+      const iCat  = hdr.findIndex(c => c.includes('bảng') || c.includes('bang') || c.includes('loại'));
+      // Member columns: everything after cat up to 6 cols, or specific "thành viên" cols
+      const iMems = hdr.reduce((acc, c, i) => {
+        if (c.includes('thành viên') || c.includes('thanh vien') || c.includes('thành viên')) acc.push(i);
+        return acc;
+      }, []);
+      // Fallback: if no explicit member cols, use cols after iCat
+      const memStart = iMems.length ? Math.min(...iMems) : Math.max(iName, iCat) + 1;
+      const memEnd   = iMems.length ? Math.max(...iMems) : memStart + 5;
+
+      _importRows = [];
+      for (let i = hdrRow + 1; i < raw.length; i++) {
+        const row = raw[i];
+        const name = String(row[iName]||'').trim();
+        if (!name) continue; // skip empty rows
+
+        const catRaw = String(row[iCat >= 0 ? iCat : 1]||'').trim();
+        const cat    = normalCat(catRaw);
+
+        const mem = [];
+        for (let m = memStart; m <= Math.min(memEnd, row.length - 1, memStart + 5); m++) {
+          const v = String(row[m]||'').trim();
+          if (v) mem.push(v);
+        }
+        if (!mem.length) mem.push('Thành viên 1');
+
+        _importRows.push({ name, catRaw, cat, mem,
+          ok: !!(name && cat) });
+      }
+
+      if (!_importRows.length) {
+        toast('Không tìm thấy dữ liệu đội nào trong file.', true); inp.value=''; return;
+      }
+
+      showImportModal();
+    } catch(err) {
+      toast('Lỗi đọc file: ' + err.message, true);
+    } finally {
+      inp.value = '';
+    }
+  };
+  reader.readAsBinaryString(inp.files[0]);
+}
+
+function showImportModal() {
+  const valid   = _importRows.filter(r => r.ok);
+  const invalid = _importRows.filter(r => !r.ok);
+
+  document.getElementById('importSummary').innerHTML =
+    `Tìm thấy <strong style="color:#09b4cc">${_importRows.length}</strong> dòng &nbsp;·&nbsp; ` +
+    `<strong style="color:#34d399">${valid.length} hợp lệ</strong> &nbsp;·&nbsp; ` +
+    (invalid.length ? `<strong style="color:#f87171">${invalid.length} lỗi</strong>` : `<strong style="color:#34d399">0 lỗi</strong>`);
+
+  document.getElementById('importBody').innerHTML = _importRows.map((r, i) => `
+    <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+      <td style="padding:8px 12px;color:#607090;font-size:12px">${i+1}</td>
+      <td style="padding:8px 12px;font-weight:700">${esc(r.name||'(trống)')}</td>
+      <td style="padding:8px 12px">
+        ${r.cat
+          ? `<span class="cpill ${catClass(r.cat)}">${esc(r.cat)}</span>`
+          : `<span style="color:#f87171;font-size:12px">"${esc(r.catRaw)}" — không hợp lệ</span>`}
+      </td>
+      <td style="padding:8px 12px;font-size:12px;color:#8aabcc">${esc(r.mem.join(', '))}</td>
+      <td style="padding:8px 12px;text-align:center">${r.ok ? '&#10003;' : '<span style="color:#f87171">&#10007;</span>'}</td>
+    </tr>`).join('');
+
+  const hasValid = valid.length > 0;
+  document.getElementById('importConfirmBtn').disabled = !hasValid;
+  document.getElementById('importConfirmBtn').style.opacity = hasValid ? '1' : '.4';
+
+  const errEl = document.getElementById('importErr');
+  if (invalid.length) {
+    errEl.style.display = 'block';
+    errEl.textContent = `${invalid.length} dòng lỗi sẽ bị bỏ qua (tên trống hoặc bảng không đúng: Lớp 1-2 / Lớp 3-4-5 / THCS).`;
+  } else {
+    errEl.style.display = 'none';
+  }
+
+  document.getElementById('importModal').classList.add('on');
+}
+
+function closeImport() {
+  document.getElementById('importModal').classList.remove('on');
+  _importRows = [];
+}
+
+function confirmImport() {
+  const mode  = document.querySelector('input[name="importMode"]:checked')?.value || 'append';
+  const valid = _importRows.filter(r => r.ok);
+  if (!valid.length) return;
+
+  if (mode === 'replace') {
+    teams = []; nextId = 1;
+  }
+
+  valid.forEach(r => {
+    teams.push({ id:nextId++, name:r.name, cat:r.cat, mem:r.mem,
+      rs:0, rt:0, ds:0, dt:0, done:false });
+  });
+
+  saveDB();
+  closeImport();
+  renderTeams();
+  toast(`Import thành công ${valid.length} đội!`);
+}
+</script>
+</body>
+</html>
